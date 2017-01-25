@@ -21,3 +21,14 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui \
     statuswidget.ui
+
+# RtMidi
+RTMIDI_PATH = libs/rtmidi-2.1.1
+INCLUDEPATH += $$RTMIDI_PATH
+SOURCES += $$RTMIDI_PATH/RtMidi.cpp
+HEADERS += $$RTMIDI_PATH/RtMidi.h
+
+macx {
+    DEFINES += __MACOSX_CORE__
+    LIBS += -framework CoreMidi -framework CoreAudio -framework CoreFoundation
+}
