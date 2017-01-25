@@ -10,34 +10,81 @@
     <height>236</height>
    </rect>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <property name="windowTitle">
    <string>Midi Status</string>
   </property>
   <widget class="QWidget" name="dockWidgetContents">
-   <layout class="QFormLayout" name="formLayout">
-    <item row="1" column="1">
-     <widget class="QComboBox" name="midi_in"/>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Midi In</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QComboBox" name="midi_in"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Midi Out</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QComboBox" name="midi_out"/>
+      </item>
+     </layout>
     </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label">
+    <item>
+     <widget class="QPushButton" name="reset">
       <property name="text">
-       <string>Midi In</string>
+       <string>Refresh</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="0">
-     <widget class="QLabel" name="label_2">
-      <property name="text">
-       <string>Midi Out</string>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
       </property>
-     </widget>
-    </item>
-    <item row="2" column="1">
-     <widget class="QComboBox" name="midi_out"/>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>reset</sender>
+   <signal>clicked()</signal>
+   <receiver>StatusWidget</receiver>
+   <slot>refresh()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>283</x>
+     <y>110</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>364</x>
+     <y>191</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+ <slots>
+  <slot>refresh()</slot>
+ </slots>
 </ui>
