@@ -3,6 +3,7 @@
 #include <QDebug>
 
 #include "statuswidget.h"
+#include "recordwidget.h"
 
 #include <RtMidi.h>
 
@@ -18,6 +19,10 @@ int main(int argc, char *argv[])
         w.addDockWidget(
                     Qt::LeftDockWidgetArea,
                     new StatusWidget(midi_in, midi_out)
+                    );
+        w.addDockWidget(
+                    Qt::LeftDockWidgetArea,
+                    new RecordWidget(midi_in, midi_out)
                     );
         w.show();
         return a.exec();

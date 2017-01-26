@@ -8,9 +8,6 @@ namespace Ui {
 class StatusWidget;
 }
 
-class RtMidiIn;
-class RtMidiOut;
-
 class StatusWidget : public QDockWidget
 {
     Q_OBJECT

@@ -14,13 +14,16 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    statuswidget.cpp
+    statuswidget.cpp \
+    recordwidget.cpp
 
 HEADERS  += mainwindow.h \
-    statuswidget.h
+    statuswidget.h \
+    recordwidget.h
 
 FORMS    += mainwindow.ui \
-    statuswidget.ui
+    statuswidget.ui \
+    recordwidget.ui
 
 # RtMidi
 RTMIDI_PATH = libs/rtmidi-2.1.1
