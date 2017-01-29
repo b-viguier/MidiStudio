@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>354</width>
-    <height>84</height>
+    <width>287</width>
+    <height>190</height>
    </rect>
   </property>
   <property name="locale">
@@ -40,7 +40,93 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="QCheckBox" name="metronome">
+        <property name="text">
+         <string>Metronome</string>
+        </property>
+       </widget>
+      </item>
      </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox">
+      <property name="title">
+       <string>Track</string>
+      </property>
+      <layout class="QFormLayout" name="formLayout">
+       <item row="0" column="0">
+        <widget class="QLabel" name="beatsPerMinuteLabel">
+         <property name="text">
+          <string>Beats Per Minute</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QSpinBox" name="bpm">
+         <property name="minimum">
+          <number>50</number>
+         </property>
+         <property name="maximum">
+          <number>200</number>
+         </property>
+         <property name="value">
+          <number>110</number>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QLabel" name="label">
+         <property name="text">
+          <string>Signature</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QSpinBox" name="beats">
+           <property name="minimum">
+            <number>2</number>
+           </property>
+           <property name="maximum">
+            <number>16</number>
+           </property>
+           <property name="value">
+            <number>4</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="division">
+           <property name="minimum">
+            <number>4</number>
+           </property>
+           <property name="maximum">
+            <number>8</number>
+           </property>
+           <property name="singleStep">
+            <number>4</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>40</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>
