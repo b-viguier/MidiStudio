@@ -20,7 +20,7 @@ struct Internal {
     static void openMidiInterface(RtMidi& midi, const QVariant& data) {
         midi.closePort();
         switch(data.type()) {
-        case QMetaType::Int:
+        case QMetaType::UInt:
             midi.openPort(data.toInt());
             break;
         case QMetaType::QString:
