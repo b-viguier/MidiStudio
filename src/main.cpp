@@ -1,9 +1,9 @@
-#include "mainwindow.h"
+#include "forms/mainwindow.h"
 #include <QApplication>
 #include <QDebug>
 
-#include "statuswidget.h"
-#include "recordwidget.h"
+#include "forms/statuswidget.h"
+#include "forms/recordwidget.h"
 
 #include <RtMidi.h>
 
