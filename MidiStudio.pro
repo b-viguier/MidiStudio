@@ -14,6 +14,7 @@ TEMPLATE = app
 
 SOURCES += src/main.cpp
 
+include( src/core/core.pri )
 include( src/forms/forms.pri )
 
 include( libs/rtmidi-2.1.1/rtmidi.pri )

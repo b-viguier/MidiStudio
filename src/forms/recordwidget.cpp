@@ -1,15 +1,17 @@
 #include "recordwidget.h"
 #include "ui_recordwidget.h"
 
+#include "qmidi.h"
+#include <QDebug>
+
 namespace {
     struct Internal {
     };
 }
 
-RecordWidget::RecordWidget(RtMidiIn& midi_in, RtMidiOut& midi_out) :
+RecordWidget::RecordWidget(QMidi& midi) :
     ui(new Ui::RecordWidget),
-    _midi_in(midi_in),
-    _midi_out(midi_out)
+    _midi(midi)
 {
     ui->setupUi(this);
 
@@ -37,10 +39,10 @@ void RecordWidget::on_record_clicked(bool enabled)
 {
     if(enabled) {
         _track.clear();
-        _midi_in.setCallback(&RecordWidget::onMidiEvent, this);
-        _time.start();
+        connect(&_midi,&QMidi::messageReceived, this, &RecordWidget::onMidiEvent);
+        _midi.resetTime();
     } else {
-        _midi_in.cancelCallback();
+        disconnect(&_midi,&QMidi::messageReceived, this, &RecordWidget::onMidiEvent);
     }
 }
 
@@ -66,7 +68,7 @@ void RecordWidget::onBpmTimeout()
         VELOCITY = 60,
     };
 
-    std::vector<unsigned char> note = {
+    MidiMessage note = {
         MidiValue::NOTE_ON + MidiValue::CHANNEL,
         MidiValue::BEAT_NOTE,
         MidiValue::VELOCITY
@@ -74,10 +76,10 @@ void RecordWidget::onBpmTimeout()
     if(_current_beat == 0) {
         note[2] += 40;
     }
-    _midi_out.sendMessage(&note);
+    _midi.sendMessage(note);
     _current_beat = (_current_beat + 1) % ui->beats->value();
     note[0] = MidiValue::NOTE_OFF + MidiValue::CHANNEL;
-    _midi_out.sendMessage(&note);
+    _midi.sendMessage(note);
 }
 
 void RecordWidget::on_bpm_valueChanged(int)
@@ -87,18 +89,17 @@ void RecordWidget::on_bpm_valueChanged(int)
 
 void RecordWidget::timerEvent(QTimerEvent*)
 {
-    int current_millis = _time.elapsed();
+    unsigned int current_millis = _time.elapsed();
     for(;_cursor != _track.end() && _cursor->millis <= current_millis; ++_cursor) {
-        _midi_out.sendMessage(&_cursor->data);
+        _midi.sendMessage(_cursor->data);
     }
 }
 
-void RecordWidget::onMidiEvent(double , std::vector<unsigned char> *message, void *userData)
+void RecordWidget::onMidiEvent(unsigned int millis, const MidiMessage& message)
 {
-    RecordWidget* self = reinterpret_cast<RecordWidget*>(userData);
-    MidiMessage msg = {
-        self->_time.elapsed(),
-        *message,
+    MidiTimeMessage msg = {
+        millis,
+        message,
     };
-    self->_track.append(msg);
+    _track.append(msg);
 }

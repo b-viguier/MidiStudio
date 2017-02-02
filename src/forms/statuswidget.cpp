@@ -2,46 +2,26 @@
 #include "ui_statuswidget.h"
 #include <QScrollBar>
 
-#include <RtMidi.h>
+#include "qmidi.h"
 
 namespace {
 struct Internal {
 
-    static void fillMidiInterfaces(RtMidi& midi, QComboBox& comboBox) {
+    static void fillMidiInterfaces(const QStringList& items, QComboBox& comboBox) {
         comboBox.clear();
         comboBox.addItem(QObject::tr("None"));
-        comboBox.addItem(QObject::tr("Virtual"), QVariant("MidiStudio Virtual Interface"));
-        const unsigned int nbPorts = midi.getPortCount();
-        for ( unsigned int i=0; i<nbPorts; ++i ) {
-            comboBox.addItem(QString::fromStdString(midi.getPortName(i)), QVariant(i));
-        }
-    }
-
-    static void openMidiInterface(RtMidi& midi, const QVariant& data) {
-        midi.closePort();
-        switch(data.type()) {
-        case QMetaType::UInt:
-            midi.openPort(data.toInt());
-            break;
-        case QMetaType::QString:
-            midi.openVirtualPort(data.toString().toStdString());
-            break;
-        default:
-            break;
-        }
+        comboBox.addItems(items);
     }
 };
 }
 
-StatusWidget::StatusWidget(RtMidiIn& midi_in, RtMidiOut& midi_out) :
+StatusWidget::StatusWidget(QMidi &midi) :
     ui(new Ui::StatusWidget),
-    _midi_in(midi_in),
-    _midi_out(midi_out)
+    _midi(midi)
 {
     ui->setupUi(this);
 
-    _midi_in.setErrorCallback(StatusWidget::onMidiError, this);
-    _midi_out.setErrorCallback(StatusWidget::onMidiError, this);
+    connect(&_midi, &QMidi::errorOccurred, this, &StatusWidget::onMidiError);
     refresh();
 }
 
@@ -50,28 +30,28 @@ StatusWidget::~StatusWidget()
     delete ui;
 }
 
-void StatusWidget::onMidiError(RtMidiError::Type, const std::string &errorText, void* userData)
+void StatusWidget::onMidiError(const QString& message)
 {
-    StatusWidget* self = reinterpret_cast<StatusWidget*>(userData);
-    self->ui->logs->appendPlainText(QString::fromStdString(errorText));
-    self->ui->logs->verticalScrollBar()->setValue(self->ui->logs->verticalScrollBar()->maximum());
+    ui->logs->appendPlainText(message);
+    ui->logs->verticalScrollBar()->setValue(ui->logs->verticalScrollBar()->maximum());
 }
 
 void StatusWidget::refresh()
 {
-    ui->midi_out->clear();
-    ui->midi_out->clear();
-
-    Internal::fillMidiInterfaces(_midi_in, *ui->midi_in);
-    Internal::fillMidiInterfaces(_midi_out, *ui->midi_out);
+    Internal::fillMidiInterfaces(_midi.availableInterfaces<QMidi::IN>(), *ui->midi_in);
+    Internal::fillMidiInterfaces(_midi.availableInterfaces<QMidi::OUT>(), *ui->midi_out);
 }
 
-void StatusWidget::on_midi_in_currentIndexChanged(int)
+void StatusWidget::on_midi_in_currentTextChanged(const QString& text)
 {
-    Internal::openMidiInterface(_midi_in, ui->midi_in->currentData());
+    if(!_midi.selectInterface<QMidi::IN>(text)) {
+        ui->midi_in->setCurrentIndex(0);
+    }
 }
 
-void StatusWidget::on_midi_out_currentIndexChanged(int)
+void StatusWidget::on_midi_out_currentTextChanged(const QString& text)
 {
-    Internal::openMidiInterface(_midi_out, ui->midi_out->currentData());
+    if(!_midi.selectInterface<QMidi::OUT>(text)) {
+        ui->midi_out->setCurrentIndex(0);
+    }
 }
