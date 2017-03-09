@@ -2,6 +2,9 @@
 #include <QApplication>
 
 #include "core/qmidi.h"
+#include "core/sequencer.h"
+#include "core/timeline.h"
+
 #include "forms/statuswidget.h"
 #include "forms/recordwidget.h"
 
@@ -11,6 +14,8 @@ int main(int argc, char *argv[])
     MainWindow w;
 
     QMidi midi;
+    TimeLine timeline(10);
+    Sequencer sequencer(midi, timeline);
 
     w.addDockWidget(
                 Qt::LeftDockWidgetArea,
@@ -18,7 +23,7 @@ int main(int argc, char *argv[])
                 );
     w.addDockWidget(
                 Qt::LeftDockWidgetArea,
-                new RecordWidget(midi)
+                new RecordWidget(sequencer)
                 );
     w.show();
     return a.exec();
